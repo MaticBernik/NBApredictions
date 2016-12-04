@@ -59,6 +59,11 @@ for i in range(0,len(tekme)):
     homeTeamGames=[]            #subset of matches where tekme[i]'s home team played
     awayTeamGames=[]            #subset of matches where tekme[i]'s away team played
     homeVSawayGames=[]          #subset of all matches where tekme[i]'s away team played versus home team
+    homeTeamWinningStreakLength=0 #maximum number of consecutive games home team won in a row
+    awayTeamWinningStreakLength=0 #maximum number of consecutive games away team won in a row
+    homeTeamLosingStreakLength=0 #maximum number of consecutive games home team lost in a row
+    awayTeamLosingStreakLength=0 #maximum number of consecutive games away team lost in a row
+    
     for row in priorGames:
         if row[1]==homeTeamName or row[2]==homeTeamName:
             homeTeamGames.append(row)
@@ -69,18 +74,38 @@ for i in range(0,len(tekme)):
 
     homeTeamGamesWon=[]         #subset of matches, where tekme[i]'s home team won
     homeTeamGamesLost=[]        #subset of matches, where tekme[i]'s home team lost
+    homeWinStreak=0
+    homeLoseStreak=0
+    awayWinStreak=0
+    awayLoseStreak=0
     for row in homeTeamGames:
         if (row[1]==homeTeamName and row[28]>row[29]) or (row[2]==homeTeamName and row[29]>row[28]):
             homeTeamGamesWon.append(row)
+            homeWinStreak+=1
+            homeLoseStreak=0
+            if homeWinStreak > homeTeamWinningStreakLength:
+                homeTeamWinningStreakLength=homeWinStreak
         else:
-            homeTeamGamesLost.append(row)                          
+            homeTeamGamesLost.append(row)  
+            homeWinStreak=0
+            homeLoseStreak+=1
+            if homeLoseStreak > homeTeamLosingStreakLength:
+                homeTeamLosingStreakLength=homeLoseStreak                        
     awayTeamGamesWon=[]         #subset of matches, where tekme[i]'s away team won
     awayTeamGamesLost=[]        #subset of matches, where tekme[i]'s away team lost
     for row in awayTeamGames:
         if (row[1]==awayTeamName and row[28]>row[29]) or (row[2]==awayTeamName and row[29]>row[28]):
             awayTeamGamesWon.append(row)
+            awayWinStreak+=1
+            awayLoseStreak=0
+            if awayWinStreak > awayTeamWinningStreakLength:
+                awayTeamWinningStreakLength=awayWinStreak
         else:
             awayTeamGamesLost.append(row)
+            awayWinStreak=0
+            awayLoseStreak+=1
+            if awayLoseStreak > awayTeamLosingStreakLength:
+                awayTeamLosingStreakLength=awayLoseStreak
     homeVSawayGames_homeWin=[]
     homeVSawayGames_awayWin=[]
     for row in homeVSawayGames:
@@ -146,6 +171,10 @@ for i in range(0,len(tekme)):
     gamesRow.append(homeTeamNumberOfGamesWon)
     gamesRow.append(homeTeamNumberOfGamesLost)
     gamesRow.append(round(homeVSaway_winRatio,2))
+    gamesRow.append(awayTeamWinningStreakLength)
+    gamesRow.append(awayTeamLosingStreakLength)
+    gamesRow.append(homeTeamWinningStreakLength)
+    gamesRow.append(homeTeamLosingStreakLength)
     gamesRow.append(finalPointsScoreDifferential) #TARGET VARIABLE FOR REGRESSION
     gamesRow.append(homeTeamWin) #TARGET VARIABLE FOR CLASSIFICATION
     
@@ -171,6 +200,10 @@ headerGames.append('AWAY_GamesLost')
 headerGames.append('HOME_GamesWon')
 headerGames.append('HOME_GamesLost')
 headerGames.append('HOMEvsAWAY_winRatio')
+headerGames.append('AWAY_longestWinStreak')
+headerGames.append('AWAY_longestLoseStreak')
+headerGames.append('HOME_longestWinStreak')
+headerGames.append('HOME_longestLoseStreak')
 headerGames.append('finalScoreDifferential') #TARGET VARIABLE FOR REGRESSION
 headerGames.append('HOME_win') #TARGET VARIABLE FOR CLASSIFICATION
 
