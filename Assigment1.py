@@ -71,22 +71,68 @@ for i in range(0,len(tekme)):
             awayTeamGames.append(row)    
         if (row[1]==awayTeamName and row[2]==homeTeamName) or (row[2]==awayTeamName and row[1]==homeTeamName):      
             homeVSawayGames.append(row)     
-
+    homeTeamAsHome=[] #subset of matches, where tekme[i]'s home team played as home team
+    homeTeamAsAway=[] #subset of matches, where tekme[i]'s home team played as away team
+    awayTeamAsHome=[] #subset of matches, where tekme[i]'s away team played as home team
+    awayTeamAsAway=[] #subset of matches, where tekme[i]'s away team played as away team
+    homeTeamAsHome_Win=[]
+    homeTeamAsHome_Losts=[]
+    homeTeamAsAway_Win=[]
+    homeTeamAsAway_Losts=[]
+    awayTeamAsHome_Win=[]
+    awayTeamAsHome_Losts=[]
+    awayTeamAsAway_Win=[]
+    awayTeamAsAway_Losts=[]
+    
+    for row in homeTeamGames:
+        if row[1]==homeTeamName:
+            homeTeamAsAway.append(row)
+            if row[28]>row[29]:
+                homeTeamAsAway_Win.append(row)
+            else:
+                homeTeamAsAway_Losts.append(row)    
+        else:
+            homeTeamAsHome.append(row)
+            if row[29]>row[28]:
+                homeTeamAsHome_Win.append(row)
+            else:
+                homeTeamAsHome_Losts.append(row)  
+    for row in awayTeamGames:
+        if row[1]==awayTeamName:
+            awayTeamAsAway.append(row)
+            if row[28]>row[29]:
+                awayTeamAsAway_Win.append(row)
+            else:
+                awayTeamAsAway_Losts.append(row)
+        else:
+            awayTeamAsHome.append(row)            
+            if row[29]>row[28]:
+                awayTeamAsHome_Win.append(row)
+            else:
+                awayTeamAsHome_Losts.append(row)
     homeTeamGamesWon=[]         #subset of matches, where tekme[i]'s home team won
     homeTeamGamesLost=[]        #subset of matches, where tekme[i]'s home team lost
     homeWinStreak=0
     homeLoseStreak=0
     awayWinStreak=0
     awayLoseStreak=0
+    homeNonconsecutiveWins=0
+    homeNonconsecutiveLosts=0
+    awayNonconsecutiveWins=0
+    awayNonconsecutiveLosts=0
     for row in homeTeamGames:
         if (row[1]==homeTeamName and row[28]>row[29]) or (row[2]==homeTeamName and row[29]>row[28]):
-            homeTeamGamesWon.append(row)
+            homeTeamGamesWon.append(row) 
+            if homeLoseStreak==1:
+                homeNonconsecutiveLosts+=1               
             homeWinStreak+=1
             homeLoseStreak=0
             if homeWinStreak > homeTeamWinningStreakLength:
                 homeTeamWinningStreakLength=homeWinStreak
         else:
-            homeTeamGamesLost.append(row)  
+            homeTeamGamesLost.append(row)
+            if homeWinStreak==1:
+                homeNonconsecutiveWins+=1  
             homeWinStreak=0
             homeLoseStreak+=1
             if homeLoseStreak > homeTeamLosingStreakLength:
@@ -96,12 +142,16 @@ for i in range(0,len(tekme)):
     for row in awayTeamGames:
         if (row[1]==awayTeamName and row[28]>row[29]) or (row[2]==awayTeamName and row[29]>row[28]):
             awayTeamGamesWon.append(row)
+            if awayLoseStreak==1:
+                awayNonconsecutiveLosts+=1
             awayWinStreak+=1
             awayLoseStreak=0
             if awayWinStreak > awayTeamWinningStreakLength:
                 awayTeamWinningStreakLength=awayWinStreak
         else:
             awayTeamGamesLost.append(row)
+            if awayWinStreak==1:
+                awayNonconsecutiveLosts+=1
             awayWinStreak=0
             awayLoseStreak+=1
             if awayLoseStreak > awayTeamLosingStreakLength:
@@ -121,7 +171,8 @@ for i in range(0,len(tekme)):
     homeTeamWin=(True if tekme[i][29]>tekme[i][28] else False)      #true if home team achieved more points than away team during this game
     finalPointsScoreDifferential=abs(tekme[i][29]-tekme[i][28])     #difference between home and away team scores after this match
     homeVSaway_winRatio=(len(homeVSawayGames_homeWin)-len(homeVSawayGames_awayWin))/(len(homeVSawayGames_homeWin)+len(homeVSawayGames_awayWin)) if len(homeVSawayGames_homeWin)+len(homeVSawayGames_awayWin)>0 else 0 #difference between past home team wins over away team; normaliset to [-1,1] interval 
-
+    homeTeam_homeTurfAdvantage=(len(homeTeamAsHome_Win)-len(homeTeamAsHome_Losts))/len(homeTeamAsHome) if len(homeTeamAsHome)>0 else 0 #value aproaches +1 as team was more successful playing as home team and approaches -1 if it was actually playing worse
+    awayTeam_homeTurfAdvantage=(len(awayTeamAsHome_Win)-len(awayTeamAsHome_Losts))/len(awayTeamAsHome) if len(awayTeamAsHome)>0 else 0#value aproaches +1 as team was more successful playing as home team and approaches -1 if it was actually playing worse
     '''#####append new statistical data for throws TO INPUT TABLE'''
     # 2 points throws
     away2pointAttempt = tekme[i][3]
@@ -175,7 +226,13 @@ for i in range(0,len(tekme)):
     gamesRow.append(awayTeamLosingStreakLength)
     gamesRow.append(homeTeamWinningStreakLength)
     gamesRow.append(homeTeamLosingStreakLength)
+    gamesRow.append(awayTeam_homeTurfAdvantage)
+    gamesRow.append(homeTeam_homeTurfAdvantage)
     gamesRow.append(finalPointsScoreDifferential) #TARGET VARIABLE FOR REGRESSION
+    gamesRow.append(awayNonconsecutiveWins)
+    gamesRow.append(awayNonconsecutiveLosts)
+    gamesRow.append(homeNonconsecutiveWins)
+    gamesRow.append(homeNonconsecutiveLosts)
     gamesRow.append(homeTeamWin) #TARGET VARIABLE FOR CLASSIFICATION
     
     ##### apend new row to game table
@@ -204,6 +261,12 @@ headerGames.append('AWAY_longestWinStreak')
 headerGames.append('AWAY_longestLoseStreak')
 headerGames.append('HOME_longestWinStreak')
 headerGames.append('HOME_longestLoseStreak')
+headerGames.append('HOME_homeTurfAdvantage')
+headerGames.append('AWAY_homeTurfAdvantage')
+headerGames.append('AWAY_nonconsecutiveWins')
+headerGames.append('AWAY_nonconsecutiveLosts')
+headerGames.append('HOME_nonconsecutiveWins')
+headerGames.append('HOME_nonconsecutiveLosts')
 headerGames.append('finalScoreDifferential') #TARGET VARIABLE FOR REGRESSION
 headerGames.append('HOME_win') #TARGET VARIABLE FOR CLASSIFICATION
 
