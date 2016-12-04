@@ -4,14 +4,14 @@ from datetime import date, datetime, timedelta
 
 """""""""""""""""""""""""""""""""    PATH VARIABLES     """""""""""""""""""""""""""""""""""""""
 #matic
-#file0809 = '/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/nba0809.txt'
-#file0910 = '/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/nba0910.txt'
-#output_file = '/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/games.csv'
+file0809 = '/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/nba0809.txt'
+file0910 = '/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/nba0910.txt'
+output_file = '/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/games.csv'
 
 #robert
-file0809 = 'C:/Users/Robert/Documents/GitHub/NBApredictions/nba0809.txt'
-file0910 = 'C:/Users/Robert/Documents/GitHub/NBApredictions/nba0910.txt'
-output_file = 'C:/Users/Robert/Documents/GitHub/NBApredictions/games.csv'
+#file0809 = 'C:/Users/Robert/Documents/GitHub/NBApredictions/nba0809.txt'
+#file0910 = 'C:/Users/Robert/Documents/GitHub/NBApredictions/nba0910.txt'
+#output_file = 'C:/Users/Robert/Documents/GitHub/NBApredictions/games.csv'
 
 """""""""""""""""""""""""""""""""     read file    """""""""""""""""""""""""""""""""""""""
 #####preberemo datoteki v tabeli
@@ -23,7 +23,7 @@ fileNBA0910=open(file0910,'r')
 readerNBA0910=csv.reader(fileNBA0910)
 readerNBA0809=csv.reader(fileNBA0809)
 #store file into a list
-header=next(readerNBA0910)
+headerTekme=next(readerNBA0910)
 next(readerNBA0809) #preskoci zaglavje
 tableNBA0910=[row for row in readerNBA0910]
 tableNBA0809=[row for row in readerNBA0809]
@@ -46,6 +46,10 @@ for row in tekme:
 tekme = sorted(tekme, key = lambda row: row[0])
 
 """""""""""""""""""""""""""""""""    attribute manipulation     """""""""""""""""""""""""""""""""""""""
+#####create new table - where row represents a game described only by attributes derived from previous matches
+games=[]
+headerGames=["AWAY_NAME","HOME_NAME"]
+
 #####construct new attributes
 for i in range(0,len(tekme)):
     #####prepare variables
@@ -93,17 +97,7 @@ for i in range(0,len(tekme)):
     finalPointsScoreDifferential=abs(tekme[i][29]-tekme[i][28])     #difference between home and away team scores after this match
     homeVSaway_winRatio=(len(homeVSawayGames_homeWin)-len(homeVSawayGames_awayWin))/(len(homeVSawayGames_homeWin)+len(homeVSawayGames_awayWin)) if len(homeVSawayGames_homeWin)+len(homeVSawayGames_awayWin)>0 else 0 #difference between past home team wins over away team; normaliset to [-1,1] interval 
 
-    #####construct & append new atributes HERE
-    tekme[i].append(finalPointsScoreDifferential)
-    tekme[i].append(homeTeamWin)
-    tekme[i].append(awayTeamNumberOfGamesWon)
-    tekme[i].append(awayTeamNumberOfGamesLost)
-    tekme[i].append(homeTeamNumberOfGamesWon)
-    tekme[i].append(homeTeamNumberOfGamesLost)
-    tekme[i].append(round(homeVSaway_winRatio,2))
-
-
-    #####append new statistical data for throws
+    '''#####append new statistical data for throws TO INPUT TABLE'''
     # 2 points throws
     away2pointAttempt = tekme[i][3]
     away2pointMade = tekme[i][4]
@@ -144,37 +138,52 @@ for i in range(0,len(tekme)):
     tekme[i].append(home3percent)
     tekme[i].append(homeFtpercent)
     tekme[i].append(homeAllpercent)
+    
+    gamesRow=[tekme[i][1],tekme[i][2]]
+    '''#####construct & append new atributes TO NEW TABLE'''    
+    gamesRow.append(awayTeamNumberOfGamesWon)
+    gamesRow.append(awayTeamNumberOfGamesLost)
+    gamesRow.append(homeTeamNumberOfGamesWon)
+    gamesRow.append(homeTeamNumberOfGamesLost)
+    gamesRow.append(round(homeVSaway_winRatio,2))
+    gamesRow.append(finalPointsScoreDifferential) #TARGET VARIABLE FOR REGRESSION
+    gamesRow.append(homeTeamWin) #TARGET VARIABLE FOR CLASSIFICATION
+    
+    ##### apend new row to game table
+    games.append(gamesRow)
 
-    #tekme[i].append()
 
        
 #####update table header
-header.append('finalScoreDifferential')
-header.append('HOME_win') 
-header.append('AWAY_GamesWon')
-header.append('AWAY_GamesLost')
-header.append('HOME_GamesWon')
-header.append('HOME_GamesLost')
-header.append('HOMEvsAWAY_winRatio')
-header.append('AWAY TEAM 2P %')
-header.append('AWAY TEAM 3P %')
-header.append('AWAY TEAM FT %')
-header.append('AWAY TEAM ALL throws %')
-header.append('HOME TEAM 2P %')
-header.append('HOME TEAM 3P %')
-header.append('HOME TEAM FT %')
-header.append('HOME TEAM ALL throws %')
+##### for input table headerTekme
+headerTekme.append('AWAY TEAM 2P %')         
+headerTekme.append('AWAY TEAM 3P %')
+headerTekme.append('AWAY TEAM FT %')
+headerTekme.append('AWAY TEAM ALL throws %')
+headerTekme.append('HOME TEAM 2P %')
+headerTekme.append('HOME TEAM 3P %')
+headerTekme.append('HOME TEAM FT %')
+headerTekme.append('HOME TEAM ALL throws %')
+
+#for output table headerGames
+headerGames.append('AWAY_GamesWon')
+headerGames.append('AWAY_GamesLost')
+headerGames.append('HOME_GamesWon')
+headerGames.append('HOME_GamesLost')
+headerGames.append('HOMEvsAWAY_winRatio')
+headerGames.append('finalScoreDifferential') #TARGET VARIABLE FOR REGRESSION
+headerGames.append('HOME_win') #TARGET VARIABLE FOR CLASSIFICATION
 
 
 #test print table
-print(header)
-for row in tekme:
+print(headerGames)
+for row in games:
     print(row)
 
 #####output table to file
 f=open(output_file,'w')
-f.write(','.join(header)+'\n')
-for row in tekme:
+f.write(','.join(headerGames)+'\n')
+for row in games:
     tmp=[str(x) for x in row]
     f.write(','.join(tmp)+'\n')
 f.close()
