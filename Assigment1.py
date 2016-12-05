@@ -181,7 +181,7 @@ for i in range(0,len(tekme)):
     homeTeam_homeTurfAdvantage=round((len(homeTeamAsHome_Win)-len(homeTeamAsHome_Losts))/len(homeTeamAsHome), 4) if len(homeTeamAsHome)>0 else 0 #value aproaches +1 as team was more successful playing as home team and approaches -1 if it was actually playing worse
     awayTeam_homeTurfAdvantage=round((len(awayTeamAsHome_Win)-len(awayTeamAsHome_Losts))/len(awayTeamAsHome), 4) if len(awayTeamAsHome)>0 else 0#value aproaches +1 as team was more successful playing as home team and approaches -1 if it was actually playing worse
 
-    merged_games[i].append(floor(homeTeamWin))
+    merged_games[i].append(homeTeamWin)
 
     """ APPEND EXPECTED GAME STATS, BASED OF PREVIOUS GAMES """
     away2percent = 0
@@ -336,7 +336,7 @@ for i in range(0,len(tekme)):
     gamesRow.append(floor(q4_diff))
 
     gamesRow.append(floor(finalPointsScoreDifferential)) # TARGET VARIABLE FOR REGRESSION
-    gamesRow.append(floor(homeTeamWin)) #TARGET VARIABLE FOR CLASSIFICATION
+    gamesRow.append(homeTeamWin) #TARGET VARIABLE FOR CLASSIFICATION
 
     ##### apend new row to game table
     games.append(gamesRow)
