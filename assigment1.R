@@ -1,7 +1,9 @@
 ###### uvoz knjiznic ######
 source("/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/myfunctions.R") #funkcije za ocenjevanje natancnosti modela
 library(rpart)
+install.packages("CORElearn")
 library(CORElearn)
+install.packages("pROC")
 
 ###### uvoz podatkov ######
 vseIgre <- read.table("/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/games.csv", header=T, sep=",")
@@ -73,7 +75,6 @@ sprintf("Obcutljivost rekurzivnega particioniranja: %f",Sensitivity(resnicneVred
 #specificnost
 sprintf("Obcutljivost rekurzivnega particioniranja: %f",Specificity(resnicneVrednosti,napovedi,HOME_win))
 #krivulja ROC
-#install.packages("pROC") #namesti paket pROC
 rocobjKlasifikacija_rpart <- (bin.resnicneVrednosti, bin.napovedi)
 
 ##### model: odlocitveno drevo
