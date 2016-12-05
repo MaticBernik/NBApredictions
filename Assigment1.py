@@ -129,9 +129,9 @@ for i in range(0,len(tekme)):
     awayNonconsecutiveLosts=0
     for row in homeTeamGames:
         if (row[1]==homeTeamName and row[29]>row[30]) or (row[2]==homeTeamName and row[30]>row[29]):
-            homeTeamGamesWon.append(row) 
+            homeTeamGamesWon.append(row)
             if homeLoseStreak==1:
-                homeNonconsecutiveLosts+=1               
+                homeNonconsecutiveLosts+=1
             homeWinStreak+=1
             homeLoseStreak=0
             if homeWinStreak > homeTeamWinningStreakLength:
@@ -139,11 +139,11 @@ for i in range(0,len(tekme)):
         else:
             homeTeamGamesLost.append(row)
             if homeWinStreak==1:
-                homeNonconsecutiveWins+=1  
+                homeNonconsecutiveWins+=1
             homeWinStreak=0
             homeLoseStreak+=1
             if homeLoseStreak > homeTeamLosingStreakLength:
-                homeTeamLosingStreakLength=homeLoseStreak                        
+                homeTeamLosingStreakLength=homeLoseStreak
     awayTeamGamesWon=[]         #subset of matches, where tekme[i]'s away team won
     awayTeamGamesLost=[]        #subset of matches, where tekme[i]'s away team lost
     for row in awayTeamGames:
@@ -158,7 +158,7 @@ for i in range(0,len(tekme)):
         else:
             awayTeamGamesLost.append(row)
             if awayWinStreak==1:
-                awayNonconsecutiveLosts+=1
+                awayNonconsecutiveWins+=1
             awayWinStreak=0
             awayLoseStreak+=1
             if awayLoseStreak > awayTeamLosingStreakLength:
