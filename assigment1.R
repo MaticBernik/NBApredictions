@@ -2,13 +2,14 @@
 #C:\Users\Robert\Documents\GitHub\NBApredictions
 source("/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/myfunctions.R") #funkcije za ocenjevanje natancnosti modela
 #source("C:/Users/Robert/Documents/GitHub/NBApredictions/myfunctions.R") #funkcije za ocenjevanje natancnosti modela
-install.packages(c("pROC","ipred", "prodlim", "CORElearn", "e1071", "randomForest", "kernlab", "nnet"))
+install.packages(c("kknn","pROC","ipred", "prodlim", "CORElearn", "e1071", "randomForest", "kernlab", "nnet"))
 library(rpart)
 library(CORElearn)
 library(pROC)
 library(randomForest)
 library(e1071)
 library(nnet)
+library(kknn)
 
 
 ###### uvoz podatkov ######
@@ -143,7 +144,7 @@ rocobjKlasifikacija_bayes <- roc(resnicneVrednosti, predMat[,"True"])
 plot(rocobjKlasifikacija_bayes)
 #names(rocobjKlasifikacija_bayes)
 
-##### model: nevronske mreze (KNN) - CoreModel#####
+##### model: k-najblizjih sosedov - CoreModel#####
 model <- CoreModel(HOME_win ~ .,data=ucnaMnozicaKlasifikacija, model="knn",kInNN=20)
 #ocena natancnosti modela 
 resnicneVrednosti <- testnaMnozicaKlasifikacija$HOME_win
@@ -205,7 +206,7 @@ sprintf("Obcutljivost SVM: %f",Specificity(resnicneVrednosti,napovedi,"True"))
 rocobjKlasifikacija_rf <- roc(resnicneVrednosti, predMat[,"True"])
 plot(rocobjKlasifikacija_rf)
 
-##### model: nevronske mreze (KNN) - nnet #####
+##### model: nevronske mreze - nnet #####
 #norm.data <- scale.data(rbind(ucnaMnozicaKlasifikacija,testnaMnozicaKlasifikacija))
 #norm.learn <- norm.data[1:nrow(learn),]
 #norm.test <- norm.data[-(1:nrow(learn)),]
@@ -235,3 +236,93 @@ ucnaMnozicaRegresija=ucnaMnozica
 ucnaMnozicaRegresija$HOME_win <- NULL
 testnaMnozicaRegresija=testnaMnozica
 testnaMnozicaRegresija$HOME_win <- NULL
+
+##### model: linearna regresija ##### 
+lm.model <- lm(finalScoreDifferential ~ ., data = ucnaMnozicaRegresija)
+#ocena natancnosti modela
+observed <- testnaMnozicaRegresija$finalScoreDifferential
+predicted <- predict(lm.model, testnaMnozicaRegresija)
+#povprecna absolutna napaka (RME)
+sprintf("MAE za linearno regresijo: %f",mae(observed, predicted)
+#relativna povprecna absolutna napaka (RMAE)
+sprintf("RMAE za linearno regresijo: %f",rmae(observed, predicted, mean(ucnaMnozicaRegresija$finalScoreDifferential))
+#srednja kvadrirana napaka
+sprintf("MSE za linearno regresijo: %f",mse(observed, predicted))
+#relativna srednja kvadrirana napaka
+sprintf("RMSE za linearno regresijo: %f",rmse(observed, predicted, mean(ucnaMnozicaRegresija$finalScoreDifferential)))
+
+##### model: regresijsko drevo #####
+rt.model <- rpart(finalScoreDifferential ~ ., ucnaMnozicaRegresija, maxdepth = 2,minsplit=3,cp=0)
+plot(rt.model);text(rt.model, pretty = 0)
+# the minsplit parameter determines the minimum number of observations that must 
+# exist in a node in order for a split to be attempted
+# cp parameter controls a compomise between predictive accuracy and tree size
+# a table of optimal prunings based on a complexity parameter
+printcp(rt.model)
+# prune the tree using the complexity parameter associated with minimum error (eg xerror)
+rt.model2 <- prune(rt.model, cp = 0.02)
+plot(rt.model2)
+#ocena natancnosti modela
+observed <- testnaMnozicaRegresija$finalScoreDifferential
+predicted <- predict(rt.model2, testnaMnozicaRegresija)
+#povprecna absolutna napaka (RME)
+sprintf("MAE za regresijsko drevo: %f",mae(observed, predicted)
+#relativna povprecna absolutna napaka (RMAE)
+sprintf("RMAE za regresijsko drevo: %f",rmae(observed, predicted, mean(ucnaMnozicaRegresija$finalScoreDifferential))
+#srednja kvadrirana napaka
+sprintf("MSE za regresijsko drevo: %f",mse(observed, predicted))
+#relativna srednja kvadrirana napaka
+sprintf("RMSE za regresijsko drevo: %f",rmse(observed, predicted, mean(ucnaMnozicaRegresija$finalScoreDifferential)))
+
+##### model: nakljucni gozdovi ######
+rf.model <- randomForest(finalScoreDifferential ~ ., ucnaMnozicaRegresija)
+#ocena natancnosti modela
+observed <- testnaMnozicaRegresija$finalScoreDifferential
+predicted <- predict(rf.model, testnaMnozicaRegresija)
+#povprecna absolutna napaka (RME)
+sprintf("MAE za SVM: %f",mae(observed, predicted)
+#relativna povprecna absolutna napaka (RMAE)
+sprintf("RMAE za nakljucne gozdove: %f",rmae(observed, predicted, mean(ucnaMnozicaRegresija$finalScoreDifferential))
+#srednja kvadrirana napaka
+sprintf("MSE za nakljucne gozdove: %f",mse(observed, predicted))
+#relativna srednja kvadrirana napaka
+sprintf("RMSE za nakljucne gozdove: %f",rmse(observed, predicted, mean(ucnaMnozicaRegresija$finalScoreDifferential)))
+
+##### model: SVM ######
+svm.model <- svm(finalScoreDifferential ~ ., ucnaMnozicaRegresija)
+#ocena natancnosti modela
+observed <- testnaMnozicaRegresija$finalScoreDifferential
+predicted <- predict(svm.model, testnaMnozicaRegresija)
+#povprecna absolutna napaka (RME)
+sprintf("MAE za SVM: %f",mae(observed, predicted)
+#relativna povprecna absolutna napaka (RMAE)
+sprintf("RMAE za SVM: %f",rmae(observed, predicted, mean(ucnaMnozicaRegresija$finalScoreDifferential))
+#srednja kvadrirana napaka
+sprintf("MSE za SVM: %f",mse(observed, predicted))
+#relativna srednja kvadrirana napaka
+sprintf("RMSE za SVM: %f",rmse(observed, predicted, mean(ucnaMnozicaRegresija$finalScoreDifferential)))
+
+##### model: K-najblizjih sosedov ###### installation of package ‘kknn’ had non-zero exit status
+#knn.model <- kknn(finalScoreDifferential ~ ., ucnaMnozicaRegresija)
+#ocena natancnosti modela
+#observed <- testnaMnozicaRegresija$finalScoreDifferential
+#predicted <- predict(svm.model, testnaMnozicaRegresija)
+#povprecna absolutna napaka (RME)
+#mae(observed, predicted)
+#relativna povprecna absolutna napaka (RMAE)
+#rmae(observed, predicted, mean(ucnaMnozicaRegresija$finalScoreDifferential))
+
+##### model: neural network ######
+set.seed(6789)
+nn.model <- nnet(finalScoreDifferential ~ ., ucnaMnozicaRegresija, size = 10, decay = 1e-4, maxit = 10000, linout = T)
+#ocena natancnosti modela
+observed <- testnaMnozicaRegresija$finalScoreDifferential
+predicted <- predict(svm.model, testnaMnozicaRegresija)
+#povprecna absolutna napaka (RME)
+sprintf("MAE za nevronsko mrezo: %f",mae(observed, predicted)
+#relativna povprecna absolutna napaka (RMAE)
+sprintf("RMAE za nevronsko mrezo: %f",rmae(observed, predicted, mean(ucnaMnozicaRegresija$finalScoreDifferential))
+#srednja kvadrirana napaka
+sprintf("MSE za nevronsko mrezo: %f",mse(observed, predicted))
+#relativna srednja kvadrirana napaka
+sprintf("RMSE za nevronsko mrezo: %f",rmse(observed, predicted, mean(ucnaMnozicaRegresija$finalScoreDifferential)))
