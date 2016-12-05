@@ -83,7 +83,11 @@ for i in range(0,len(tekme)):
     awayTeamAsHome_Losts=[]
     awayTeamAsAway_Win=[]
     awayTeamAsAway_Losts=[]
-    
+
+    #print("home team games ", len(homeTeamGames), len(homeTeamGames[0]) if len(homeTeamGames) > 0 else 0," ",  homeTeamGames)
+    #print(len(headerTekme))
+
+
     for row in homeTeamGames:
         if row[1]==homeTeamName:
             homeTeamAsAway.append(row)
@@ -173,67 +177,126 @@ for i in range(0,len(tekme)):
     homeVSaway_winRatio=(len(homeVSawayGames_homeWin)-len(homeVSawayGames_awayWin))/(len(homeVSawayGames_homeWin)+len(homeVSawayGames_awayWin)) if len(homeVSawayGames_homeWin)+len(homeVSawayGames_awayWin)>0 else 0 #difference between past home team wins over away team; normaliset to [-1,1] interval 
     homeTeam_homeTurfAdvantage=round((len(homeTeamAsHome_Win)-len(homeTeamAsHome_Losts))/len(homeTeamAsHome), 4) if len(homeTeamAsHome)>0 else 0 #value aproaches +1 as team was more successful playing as home team and approaches -1 if it was actually playing worse
     awayTeam_homeTurfAdvantage=round((len(awayTeamAsHome_Win)-len(awayTeamAsHome_Losts))/len(awayTeamAsHome), 4) if len(awayTeamAsHome)>0 else 0#value aproaches +1 as team was more successful playing as home team and approaches -1 if it was actually playing worse
-    '''#####append new statistical data for throws TO INPUT TABLE'''
-    # 2 points throws
-    away2pointAttempt = tekme[i][3]
-    away2pointMade = tekme[i][4]
-    home2pointAttempt = tekme[i][12]
-    home2pointMade = tekme[i][13]
-    # 3 points throw
-    away3pointAttempt = tekme[i][5]
-    away3pointMade = tekme[i][6]
-    home3pointAttempt = tekme[i][14]
-    home3pointMade = tekme[i][15]
-    # free throws
-    awayFtAttempts = tekme[i][7]
-    awayFtMade = tekme[i][8]
-    homeFtAttempts = tekme[i][16]
-    homeFtMade = tekme[i][17]
-    # 2 and 3 points made // all as in game, FT don't belong here.. just a boost
-    awayAllAttempt = away2pointAttempt + away3pointAttempt
-    awayAllMade = away2pointMade + away3pointMade
-    homeAllAttempt = home2pointAttempt + home3pointAttempt
-    homeAllMade = home2pointMade + home3pointMade
 
-    #statistics
-    away2percent = round(away2pointMade / away2pointAttempt, 2)
-    away3percent = round(away3pointMade / away3pointAttempt, 2)
-    awayFtpercent = round(awayFtMade / awayFtAttempts, 2)
-    awayAllpercent = round((away2pointMade + away3pointMade) / (away2pointAttempt + away3pointAttempt), 2)
-    home2percent = round(home2pointMade / home2pointAttempt, 2)
-    home3percent = round(home3pointMade / home3pointAttempt, 2)
-    homeFtpercent = round(homeFtMade / homeFtAttempts, 2)
-    homeAllpercent = round((home2pointMade + home3pointMade) / (home2pointAttempt + home3pointAttempt), 2)
 
-    #score difference
-    #positive score -> home team winning
-    #negative score -> home team loosing
-    q1_diff = tekme[i][22] - tekme[i][21]
-    q2_diff = tekme[i][24] - tekme[i][23]
-    q3_diff = tekme[i][26] - tekme[i][25]
-    q4_diff = tekme[i][28] - tekme[i][27]
 
-    #team fouls
-    homeTeamFouls = floor(awayFtAttempts / 2);
-    awayTeamFouls = floor(homeFtAttempts / 2);
+    """ APPEND EXPECTED GAME STATS, BASED OF PREVIOUS GAMES """
+    away2percent = 0
+    away3percent = 0
+    awayFtpercent = 0
+    awayAllpercent = 0
 
-    #append throw statistics
-    tekme[i].append(away2percent)
-    tekme[i].append(away3percent)
-    tekme[i].append(awayFtpercent)
-    tekme[i].append(awayAllpercent)
-    tekme[i].append(home2percent)
-    tekme[i].append(home3percent)
-    tekme[i].append(homeFtpercent)
-    tekme[i].append(homeAllpercent)
-    
+    home2percent = 0
+    home3percent = 0
+    homeFtpercent = 0
+    homeAllpercent = 0
+
+    # team fouls
+    homeTeamFouls = 0
+    awayTeamFouls = 0
+
+    # turn overs and rebounds
+    homeTeamTO = 0
+    homeTeamOR = 0
+    homeTeamDR = 0
+
+    awayTeamTO = 0
+    awayTeamOR = 0
+    awayTeamDR = 0
+
+    #due to + / - diff sign, this is only calculated for home team advantage / fallback
+    q1_diff = 0
+    q2_diff = 0
+    q3_diff = 0
+    q4_diff = 0
+
+    if len(homeTeamGames) > 0:
+        for row in homeTeamGames:
+            home2pointAttempt = row[12]
+            home2pointMade = row[13]
+            home3pointAttempt = row[14]
+            home3pointMade = row[15]
+            homeFtAttempts = row[16]
+            homeFtMade = row[17]
+            homeAllAttempt = home2pointAttempt + home3pointAttempt
+            homeAllMade = home2pointMade + home3pointMade
+
+            home2percent += home2pointMade / home2pointAttempt
+            home3percent += home3pointMade / home3pointAttempt
+            homeFtpercent += homeFtMade / homeFtAttempts
+            homeAllpercent += (home2pointMade + home3pointMade) / (home2pointAttempt + home3pointAttempt)
+                            # away team ft attempts
+            homeTeamFouls += (floor(row[7]/2))
+
+            homeTeamTO += row[18]
+            homeTeamOR += row[19]
+            homeTeamDR += row[20]
+
+            q1_diff += row[22] - row[21]
+            q2_diff += row[24] - row[23]
+            q3_diff += row[26] - row[25]
+            q4_diff += row[28] - row[27]
+
+        home2percent /= len(homeTeamGames)
+        home3percent /= len(homeTeamGames)
+        homeFtpercent /= len(homeTeamGames)
+        homeAllpercent /= len(homeTeamGames)
+
+        homeTeamFouls /= len(homeTeamGames)
+
+        homeTeamTO /= len(homeTeamGames)
+        homeTeamOR /= len(homeTeamGames)
+        homeTeamDR /= len(homeTeamGames)
+
+        q1_diff /= len(homeTeamGames)
+        q2_diff /= len(homeTeamGames)
+        q3_diff /= len(homeTeamGames)
+        q4_diff /= len(homeTeamGames)
+
+    #end if homeTeams
+
+    if len(awayTeamGames) > 0:
+        for row in awayTeamGames:
+            away2pointAttempt = row[12]
+            away2pointMade = row[13]
+            away3pointAttempt = row[14]
+            away3pointMade = row[15]
+            awayFtAttempts = row[16]
+            awayFtMade = row[17]
+            awayAllAttempt = away2pointAttempt + away3pointAttempt
+            awayAllMade = away2pointMade + away3pointMade
+
+            away2percent += away2pointMade / away2pointAttempt
+            away3percent += away3pointMade / away3pointAttempt
+            awayFtpercent += awayFtMade / awayFtAttempts
+            awayAllpercent += (away2pointMade + away3pointMade) / (away2pointAttempt + away3pointAttempt)
+
+                            # home team ft attempts
+            awayTeamFouls += (floor(row[16] / 2))
+
+            awayTeamTO += row[9]
+            awayTeamOR += row[10]
+            awayTeamDR += row[11]
+
+        away2percent /= len(awayTeamGames)
+        away3percent /= len(awayTeamGames)
+        awayFtpercent /= len(awayTeamGames)
+        awayAllpercent /= len(awayTeamGames)
+
+        awayTeamFouls /= len(awayTeamGames)
+
+        awayTeamTO /= len(awayTeamGames)
+        awayTeamOR /= len(awayTeamGames)
+        awayTeamDR /= len(awayTeamGames)
+
+
     gamesRow=[tekme[i][1],tekme[i][2]]
     '''#####construct & append new atributes TO NEW TABLE'''    
     gamesRow.append(awayTeamNumberOfGamesWon)
     gamesRow.append(awayTeamNumberOfGamesLost)
     gamesRow.append(homeTeamNumberOfGamesWon)
     gamesRow.append(homeTeamNumberOfGamesLost)
-    gamesRow.append(round(homeVSaway_winRatio,2))
+    gamesRow.append(round(homeVSaway_winRatio,4))
     gamesRow.append(awayTeamWinningStreakLength)
     gamesRow.append(awayTeamLosingStreakLength)
     gamesRow.append(homeTeamWinningStreakLength)
@@ -245,25 +308,32 @@ for i in range(0,len(tekme)):
     gamesRow.append(homeNonconsecutiveWins)
     gamesRow.append(homeNonconsecutiveLosts)
 
-    gamesRow.append(away2percent)
-    gamesRow.append(away3percent)
-    gamesRow.append(awayFtpercent)
-    gamesRow.append(awayAllpercent)
-    gamesRow.append(home2percent)
-    gamesRow.append(home3percent)
-    gamesRow.append(homeFtpercent)
-    gamesRow.append(homeAllpercent)
+    gamesRow.append(round(away2percent, 2))
+    gamesRow.append(round(away3percent, 2))
+    gamesRow.append(round(awayFtpercent, 2))
+    gamesRow.append(round(awayAllpercent, 2))
+    gamesRow.append(round(home2percent, 2))
+    gamesRow.append(round(home3percent, 2))
+    gamesRow.append(round(homeFtpercent, 2))
+    gamesRow.append(round(homeAllpercent, 2))
 
-    gamesRow.append(q1_diff)
-    gamesRow.append(q2_diff)
-    gamesRow.append(q3_diff)
-    gamesRow.append(q4_diff)
+    gamesRow.append(floor(awayTeamFouls))
+    gamesRow.append(floor(homeTeamFouls))
 
-    gamesRow.append(awayTeamFouls)
-    gamesRow.append(homeTeamFouls)
+    gamesRow.append(floor(awayTeamTO))
+    gamesRow.append(floor(awayTeamOR))
+    gamesRow.append(floor(awayTeamDR))
+    gamesRow.append(floor(homeTeamTO))
+    gamesRow.append(floor(homeTeamOR))
+    gamesRow.append(floor(homeTeamDR))
 
-    gamesRow.append(finalPointsScoreDifferential)  # TARGET VARIABLE FOR REGRESSION
-    gamesRow.append(homeTeamWin) #TARGET VARIABLE FOR CLASSIFICATION
+    gamesRow.append(floor(q1_diff))
+    gamesRow.append(floor(q2_diff))
+    gamesRow.append(floor(q3_diff))
+    gamesRow.append(floor(q4_diff))
+
+    gamesRow.append(floor(finalPointsScoreDifferential)) # TARGET VARIABLE FOR REGRESSION
+    gamesRow.append(floor(homeTeamWin)) #TARGET VARIABLE FOR CLASSIFICATION
 
     ##### apend new row to game table
     games.append(gamesRow)
@@ -307,13 +377,20 @@ headerGames.append('HOME TEAM 3P %')
 headerGames.append('HOME TEAM FT %')
 headerGames.append('HOME TEAM ALL throws %')
 
+headerGames.append('AWAY TEAM FOULS')
+headerGames.append('HOME TEAM FOULS')
+
+headerGames.append('AWAY TEAM TO')
+headerGames.append('AWAY TEAM OR')
+headerGames.append('AWAY TEAM DR')
+headerGames.append('HOME TEAM TO')
+headerGames.append('HOME TEAM OR')
+headerGames.append('HOME TEAM DR')
+
 headerGames.append('Q1 lead HOME vs AWAY')
 headerGames.append('Q2 lead HOME vs AWAY')
 headerGames.append('Q3 lead HOME vs AWAY')
 headerGames.append('Q4 lead HOME vs AWAY')
-
-headerGames.append('AWAY TEAM FOULS')
-headerGames.append('HOME TEAM FOULS')
 
 headerGames.append('finalScoreDifferential') #TARGET VARIABLE FOR REGRESSION
 headerGames.append('HOME_win') #TARGET VARIABLE FOR CLASSIFICATION
