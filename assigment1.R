@@ -1,7 +1,7 @@
 ###### uvoz knjiznic ######
 #C:\Users\Robert\Documents\GitHub\NBApredictions
-source("/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/myfunctions.R") #funkcije za ocenjevanje natancnosti modela
-#source("C:/Users/Robert/Documents/GitHub/NBApredictions/myfunctions.R") #funkcije za ocenjevanje natancnosti modela
+#source("/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/myfunctions.R") #funkcije za ocenjevanje natancnosti modela
+source("C:/Users/Robert/Documents/GitHub/NBApredictions/myfunctions.R") #funkcije za ocenjevanje natancnosti modela
 install.packages(c("pROC","ipred", "prodlim", "CORElearn", "e1071", "randomForest", "kernlab", "nnet"))
 library(rpart)
 library(CORElearn)
@@ -12,8 +12,8 @@ library(nnet)
 
 
 ###### uvoz podatkov ######
-vseIgre <- read.table("/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/games.csv", header=T, sep=",")
-#vseIgre <- read.table("C:/Users/Robert/Documents/GitHub/NBApredictions/games.csv", header=T, sep=",")
+#vseIgre <- read.table("/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/games.csv", header=T, sep=",")
+vseIgre <- read.table("C:/Users/Robert/Documents/GitHub/NBApredictions/games.csv", header=T, sep=",")
 
 ###### pregled podatkov ######
 head(vseIgre)

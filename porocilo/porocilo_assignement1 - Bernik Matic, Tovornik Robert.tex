@@ -70,7 +70,7 @@ ORANGE (razvit na FRI), ter ugotovila, da so podatki razporejeni normalno, kar
 \end{center}
 \end{figure} 
 
-\section{Iskanje napovednih atributov}
+\section{Iskanje napovednih atributov in ustvarjanje novih}
 
 Da bi lažje določila pomembnost atributov, ki določajo rezultat tekme, sva 
 uporabila orodje Orange, za izračun teže informacije, oziroma ocene koliko 
@@ -97,14 +97,10 @@ s funkcionalnostjo scatter plot, se je izkazalo, da močno nakazuje na končno �
 \end{center}
 \end{figure} 
 
-
-\section{Ustvarjanje novih atributov}
-
 Ko sva ocenila informacijske lastnosti atributov, sva se lotila iskanja možnosti združevanja 
 in prepoznavanja sorodnosti atributov. Za to sva uporabila funkcionalnost orodja Orange,
 HeatMap, ter hkrati clustering in opazila anomalijo, ki jo povzroča datum, ki tekme unikatno
  določa. Zato sva le-tega odstranila iz učnih podatkov, ter ponovno zagnala prepoznavanje.\\
-
 
 
 \begin{figure}[H]
@@ -113,124 +109,101 @@ HeatMap, ter hkrati clustering in opazila anomalijo, ki jo povzroča datum, ki t
         \centering
         \includegraphics[width=0.9\textwidth]{OC_attrib-cluster.png}
         \caption{Heatmap z datumom}
-        \label{slika3}
+        \label{slika3.1}
     \end{minipage}\hfill
     \begin{minipage}{0.5\textwidth}
         \centering
         \includegraphics[width=0.9\textwidth]{OC_attrib-cluster-no_date.png}
         \caption{Heatmap, datum odstranjen}
-        \label{slika4}
+        \label{slika3.2}
     \end{minipage}
 \end{figure}
 
-
+Nato sva prišela s postopko združevanja atributov. Zaradi boljše verjetnosti 
+kasnejšega napovedovanja, sva se odločila za pristop statističnega napovedovanja 
+pričakovane vrednosti posameznega atributa, za vsako ekipo posebej, na podlagi 
+vrednosti atributov v preteklosti odigranih tekem. Tako sva združila npr. za posamezne 
+kategorije metov število metov in število uspšeni v odstotek uspešnih metov, na podlagi 
+števila prostih metov izračunala število prekrškov, ki jih je storila nasprotna ekipa
+ (delitev z dva, kot je ponavadi število prostih metov za prekršek), ostale preproste atribute 
+pa sva ocenila po pričakovani vrednosti.
 
 \section{Metode}
 
-Tu opišeš, na kakšen način si rešil nalogo (tehnike in metode, ki si
-jih uporabil). Lahko vključiš tudi zanimiv del programske kode, ki
-si jo morda pri tem razvil ali pa v poročilo dodatno vključiš sliko,
-kot je na primer slika~\ref{slika1}. Vse slike in tabele, ki jih
-vključiš v poročilo, morajo biti navedene v besedilu oziroma se moraš
-na njih sklicati.
+\subsection{Tesiranje}
 
-\begin{figure}[htbp]
-\begin{center}
-\includegraphics[scale=0.3]{slika-primer.png}
-\caption{Vsako sliko opremi s podnapisom, ki pove, kaj slika prikazuje.}
-\label{slika1}
-\end{center}
-\end{figure}
+Da lahko ugotovimo natančnost in uspešnost naših atributov oziroma 
+napovedni modelov, je potrebno testiranje. Osnovna metoda testiranja 
+je delitev vseh podanih primerov na učno ter testno množico. Da 
+zagotovimo optimalno oceno, morata ti dve množici biti povsem ločeni 
+oziroma neodvisni. 
 
-V to poglavje lahko tudi vključiš kakšen metodološko zanimiv del
-kode. Primer vključitve kode oziroma implementirane funkcije v
-programskem jeziku Python je:
+Ker je narava podane naloge takšna, da je pogoj, da gradimo naše učne 
+modele zgolj na podlagi podatkov tekem ki so se zgodile predohdno, je 
+sicer izjemno učinkovit način k-kratnega prečnega preverjanja odpadel. 
+Odločila sva, da je pametneje in nekako edino možno, da uporabimo delitev 
+po razmerju 70 - 30 procentov, kjer so vsi primeri najprej primerno razvrščeni
+ po datumu padajoče. Tako 70 procentov hkrati predstavlja prvih 70 procentov 
+vseh primerov in 30 procentov zadnjih 30 procentov vseh primerov. Prav tako 
+ni bil izveden običajen korak premešanja podatkov, prav z razlogom ohranitve 
+časovnega zaporedja.
 
-\begin{lstlisting}
-def fib(n):
-    if n == 0:
-        return 0
-    elif n == 1:
-        return 1
-    else:
-        return fib(n-1) + fib(n-2)
-\end{lstlisting}
+\subsection{Klasifikacija}
 
-Izris te kode je lahko sicer tudi lepši, poskušaš lahko najti še
-primernejši način vključevanja kode v Pythonu oziroma v tvojem izbranem
-programskem jeziku v okolje \LaTeX{}.
+Prvi korak pri klasifikaciji je bil, da sva iz podatkov odstranila atribut 
+"final score differencial", ki je napovedni objekt regresije.
 
-\section{Rezultati}
+Da bi lahko ocenila, ali klasifikacija deluje primerno, ter ali so atributi 
+primerno ustvajeni, sva najprej klasificirala po metodi prevladujočega razreda 
+"Majority classifier". Rezultate tega, sva privzela kot spodnjo mejo, za ovržbo 
+metod, ki bi dosegle rezultate pod le-to.
 
-V tem poglavju podaš rezultate s kratkim (enoodstavčnim)
-komentarjem. Rezultate lahko prikažeš tudi v tabeli (primer je
-tabela~\ref{tab1}).
-
-Odstavke pri pisanju poročila v LaTeX-u ločiš tako, da pred novim
-odstavkom pustiš prazno vrstico. Tudi, če pišeš poročilo v kakšnem
-drugem urejevalniku, morajo odstavki biti vidno ločeni. To narediš z
-zamikanjem ali pa z dodatnim presledkom.
+Sledila je klasifikacija po sledečih metodah, z doseženimi pripadajočimi 
+rezultati. Ocenjevala sva natančnost klasfikacije, pripadajočo oceno Brier, 
+obcutljivost, specificnost, ter izrisala ROC krivujlo.
 
 \begin{table}[htbp]
-\caption{Atributi in njihove zaloge vrednosti.}
+\caption{Metode klasifikacije ter pripadajoča uspešnost.}
 \label{tab1}
 \begin{center}
-\begin{tabular}{llp{3cm}}
+\begin{tabular}{lllllp{3cm}}
 \hline
-ime spremenljivke & definicijsko območje & opis \\
+Metoda & Natančnost & Brier score & Sensitivity & Specificity & Ploščina pod krivuljo ROC\\
 \hline
-cena & [0, 500] & cena izdelka v EUR\\
-teža & [1, 1000] & teža izdelka v dag \\
-kakovost & [slaba|srednja|dobra] & kakovost izdelka \\
+Majority & 0.60132 & - & - & - & - \\
+\hline
+DecTree & 0.615176 & 0.524994 & 0.710280 & 0.483871 & 0.6121 \\
+kNN & 0.649051 & 0.447209 & 0.803738 & 0.435484 & 0.6753 \\
+rPart & 0.650407 & 0.456028 & 0.747664 & 0.516129 & 0.6685 \\
+RandForest & 0.653117 & 0.443033 & 0.880841 & 0.338710 & 0.6728 \\
+SVM & 0.658537 & - & 0.871495 & 0.364516 & 0.6728 \\
+NaiveBayes & 0.665312 & 0.540539 & 0.775701 & 0.512903 & 0.7065 \\
 \hline
 \end{tabular}
 \end{center}
 \end{table}
 
-Podajanje rezultati naj bo primerno strukturirano. Če ima naloga več
-podnalog, uporabi podpoglavja. Če bi želel poročati o rezultatih
-izčrpno in pri tem uporabiti vrsto tabel ali grafov, razmisli o
-varianti, kjer v tem poglavju prikažeš in komentiraš samo glavne
-rezultate, kakšne manj zanimive detajle pa vključite v prilogo (glej
-prilogi~\ref{app-res} in~\ref{app-code}).
+Ker NaiveBayes predpostavlja neodvisnost atributov, sva se ga odlocila zanemarit.
+"S hitrim premislekom lahko ugotovimo da sta že met za 2 in 3 pike povezana. Če nekdo 
+nebi znal metati za 2 pike in zadeti, bi posledično tudi za 3 pike metal slabo."
 
-\section{Izjava o izdelavi domače naloge}
-Domačo nalogo in pripadajoče programe sem izdelal sam.
+Zato sva izbrala kot najboljšo klasifikacijsko metodo kar SVM.
 
-\appendix
-\appendixpage
-\section{\label{app-res}Podrobni rezultati poskusov}
-
-Če je rezultatov v smislu tabel ali pa grafov v nalogi mnogo,
-predstavi v osnovnem besedilu samo glavne, podroben prikaz
-rezultatov pa lahko predstaviš v prilogi. V glavnem besedilu ne
-pozabi navesti, da so podrobni rezultati podani v prilogi.
-
-\section{\label{app-code}Programska koda}
-
-Za domače naloge bo tipično potrebno kaj sprogramirati. Če ne bo od
-vas zahtevano, da kodo oddate posebej, to vključite v prilogo. Čisto
-za okus sem tu postavil nekaj kode, ki uporablja Orange
-(\url{http://www.biolab.si/orange}) in razvrščanje v skupine.
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.5]{9_SVM_roc.png}
+\caption{SVM pripadajoča ROC krivulja .}
+\label{slika4}
+\end{center}
+\end{figure} 
 
 
-\begin{lstlisting}
-import random
-import Orange
+\subsection{Regresija}
 
-data_names = ["iris", "housing", "vehicle"]
-data_sets = [Orange.data.Table(name) for name in data_names]
 
-print "%10s %3s %3s %3s" % ("", "Rnd", "Div", "HC")
-for data, name in zip(data_sets, data_names):
-    random.seed(42)
-    km_random = Orange.clustering.kmeans.Clustering(data, centroids = 3)
-    km_diversity = Orange.clustering.kmeans.Clustering(data, centroids = 3,
-        initialization=Orange.clustering.kmeans.init_diversity)
-    km_hc = Orange.clustering.kmeans.Clustering(data, centroids = 3,
-        initialization=Orange.clustering.kmeans.init_hclustering(n=100))
-    print "%10s %3d %3d %3d" % (name, km_random.iteration, \
-    km_diversity.iteration, km_hc.iteration)
-\end{lstlisting}
+
+\section{Rezultati}
+
+
 
 \end{document}
