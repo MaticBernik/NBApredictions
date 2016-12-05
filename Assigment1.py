@@ -7,11 +7,13 @@ from math import floor
 # file0809 = '/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/nba0809.txt'
 # file0910 = '/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/nba0910.txt'
 # output_file = '/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/games.csv'
+# merged_file = '/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/nbaMerge.csv'
 
 #robert
 file0809 = 'C:/Users/Robert/Documents/GitHub/NBApredictions/nba0809.txt'
 file0910 = 'C:/Users/Robert/Documents/GitHub/NBApredictions/nba0910.txt'
 output_file = 'C:/Users/Robert/Documents/GitHub/NBApredictions/games.csv'
+merged_file = 'C:/Users/Robert/Documents/GitHub/NBApredictions/nbaMerge.csv'
 
 """""""""""""""""""""""""""""""""     read file    """""""""""""""""""""""""""""""""""""""
 #####preberemo datoteki v tabeli
@@ -44,12 +46,13 @@ for row in tekme:
         row[i]=int(row[i])  
 #####zagotovi, da je tabela sortirana po datumu!
 tekme = sorted(tekme, key = lambda row: row[0])
+merged_games = tekme[:]
 
 """""""""""""""""""""""""""""""""    attribute manipulation     """""""""""""""""""""""""""""""""""""""
 #####create new table - where row represents a game described only by attributes derived from previous matches
 games=[]
 headerGames=["AWAY_NAME","HOME_NAME"]
-
+headerTekme.append("HOME_WIN")
 #####construct new attributes
 for i in range(0,len(tekme)):
     #####prepare variables
@@ -178,7 +181,7 @@ for i in range(0,len(tekme)):
     homeTeam_homeTurfAdvantage=round((len(homeTeamAsHome_Win)-len(homeTeamAsHome_Losts))/len(homeTeamAsHome), 4) if len(homeTeamAsHome)>0 else 0 #value aproaches +1 as team was more successful playing as home team and approaches -1 if it was actually playing worse
     awayTeam_homeTurfAdvantage=round((len(awayTeamAsHome_Win)-len(awayTeamAsHome_Losts))/len(awayTeamAsHome), 4) if len(awayTeamAsHome)>0 else 0#value aproaches +1 as team was more successful playing as home team and approaches -1 if it was actually playing worse
 
-
+    merged_games[i].append(floor(homeTeamWin))
 
     """ APPEND EXPECTED GAME STATS, BASED OF PREVIOUS GAMES """
     away2percent = 0
@@ -339,18 +342,6 @@ for i in range(0,len(tekme)):
     games.append(gamesRow)
 
 
-       
-#####update table header
-##### for input table headerTekme
-headerTekme.append('AWAY TEAM 2P %')         
-headerTekme.append('AWAY TEAM 3P %')
-headerTekme.append('AWAY TEAM FT %')
-headerTekme.append('AWAY TEAM ALL throws %')
-headerTekme.append('HOME TEAM 2P %')
-headerTekme.append('HOME TEAM 3P %')
-headerTekme.append('HOME TEAM FT %')
-headerTekme.append('HOME TEAM ALL throws %')
-
 #for output table headerGames
 headerGames.append('AWAY_GamesWon')
 headerGames.append('AWAY_GamesLost')
@@ -408,6 +399,19 @@ for row in games:
     tmp=[str(x) for x in row]
     f.write(','.join(tmp)+'\n')
 f.close()
+
+
+"""""""""""""""""""""""""""""""""    MERGED DATA FILES - no changes  - ORIGINAL CONTENT   """""""""""""""""""""""""""""""""""""""
+
+
+#####output table to file
+f=open(merged_file,'w')
+f.write(','.join(headerTekme)+'\n')
+for row in merged_games:
+    tmp=[str(x) for x in row]
+    f.write(','.join(tmp)+'\n')
+f.close()
+
 
 """""""""""""""""""""""""""""""""         """""""""""""""""""""""""""""""""""""""
 """""""""""""""""""""""""""""""""   script ends      """""""""""""""""""""""""""""""""""""""
