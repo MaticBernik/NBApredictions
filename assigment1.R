@@ -1,10 +1,15 @@
 ###### uvoz knjiznic ######
-source("/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/myfunctions.R") #funkcije za ocenjevanje natancnosti modela
+#C:\Users\Robert\Documents\GitHub\NBApredictions
+#source("/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/myfunctions.R") #funkcije za ocenjevanje natancnosti modela
+source("C:/Users/Robert/Documents/GitHub/NBApredictions/myfunctions.R") #funkcije za ocenjevanje natancnosti modela
 library(rpart)
 library(CORElearn)
 
 ###### uvoz podatkov ######
-vseIgre <- read.table("/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/games.csv", header=T, sep=",")
+#vseIgre <- read.table("/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/games.csv", header=T, sep=",")
+vseIgre <- read.table("C:/Users/Robert/Documents/GitHub/NBApredictions/games.csv", header=T, sep=",")
+
+
 ###### izracun izhodiscne natancnosti - vecinskega klasifikatorja
 domacaZmagaIgre=vseIgre[vseIgre$HOME_win == "True",] #vse igre, kjer je zmagala domaca ekipa
 tujaZmagaIgre=vseIgre[vseIgre$HOME_win == "False",] #vse igre, kjer je zmagala tuja ekipa
