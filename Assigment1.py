@@ -1,17 +1,17 @@
 """""""""""""""""""""""""""""""""    IMPORT FILES     """""""""""""""""""""""""""""""""""""""
 import csv
 from datetime import date, datetime, timedelta
-
+from math import floor
 """""""""""""""""""""""""""""""""    PATH VARIABLES     """""""""""""""""""""""""""""""""""""""
 #matic
-file0809 = '/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/nba0809.txt'
-file0910 = '/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/nba0910.txt'
-output_file = '/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/games.csv'
+# file0809 = '/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/nba0809.txt'
+# file0910 = '/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/nba0910.txt'
+# output_file = '/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/games.csv'
 
 #robert
-#file0809 = 'C:/Users/Robert/Documents/GitHub/NBApredictions/nba0809.txt'
-#file0910 = 'C:/Users/Robert/Documents/GitHub/NBApredictions/nba0910.txt'
-#output_file = 'C:/Users/Robert/Documents/GitHub/NBApredictions/games.csv'
+file0809 = 'C:/Users/Robert/Documents/GitHub/NBApredictions/nba0809.txt'
+file0910 = 'C:/Users/Robert/Documents/GitHub/NBApredictions/nba0910.txt'
+output_file = 'C:/Users/Robert/Documents/GitHub/NBApredictions/games.csv'
 
 """""""""""""""""""""""""""""""""     read file    """""""""""""""""""""""""""""""""""""""
 #####preberemo datoteki v tabeli
@@ -87,26 +87,26 @@ for i in range(0,len(tekme)):
     for row in homeTeamGames:
         if row[1]==homeTeamName:
             homeTeamAsAway.append(row)
-            if row[28]>row[29]:
+            if row[29]>row[30]:
                 homeTeamAsAway_Win.append(row)
             else:
                 homeTeamAsAway_Losts.append(row)    
         else:
             homeTeamAsHome.append(row)
-            if row[29]>row[28]:
+            if row[30]>row[29]:
                 homeTeamAsHome_Win.append(row)
             else:
                 homeTeamAsHome_Losts.append(row)  
     for row in awayTeamGames:
         if row[1]==awayTeamName:
             awayTeamAsAway.append(row)
-            if row[28]>row[29]:
+            if row[29]>row[30]:
                 awayTeamAsAway_Win.append(row)
             else:
                 awayTeamAsAway_Losts.append(row)
         else:
             awayTeamAsHome.append(row)            
-            if row[29]>row[28]:
+            if row[30]>row[29]:
                 awayTeamAsHome_Win.append(row)
             else:
                 awayTeamAsHome_Losts.append(row)
@@ -121,7 +121,7 @@ for i in range(0,len(tekme)):
     awayNonconsecutiveWins=0
     awayNonconsecutiveLosts=0
     for row in homeTeamGames:
-        if (row[1]==homeTeamName and row[28]>row[29]) or (row[2]==homeTeamName and row[29]>row[28]):
+        if (row[1]==homeTeamName and row[29]>row[30]) or (row[2]==homeTeamName and row[30]>row[29]):
             homeTeamGamesWon.append(row) 
             if homeLoseStreak==1:
                 homeNonconsecutiveLosts+=1               
@@ -140,7 +140,7 @@ for i in range(0,len(tekme)):
     awayTeamGamesWon=[]         #subset of matches, where tekme[i]'s away team won
     awayTeamGamesLost=[]        #subset of matches, where tekme[i]'s away team lost
     for row in awayTeamGames:
-        if (row[1]==awayTeamName and row[28]>row[29]) or (row[2]==awayTeamName and row[29]>row[28]):
+        if (row[1]==awayTeamName and row[29]>row[30]) or (row[2]==awayTeamName and row[30]>row[29]):
             awayTeamGamesWon.append(row)
             if awayLoseStreak==1:
                 awayNonconsecutiveLosts+=1
@@ -159,7 +159,7 @@ for i in range(0,len(tekme)):
     homeVSawayGames_homeWin=[]
     homeVSawayGames_awayWin=[]
     for row in homeVSawayGames:
-        if (row[1]==awayTeamName and row[28]>row[29]) or (row[2]==awayTeamName and row[29]>row[28]):
+        if (row[1]==awayTeamName and row[29]>row[30]) or (row[2]==awayTeamName and row[30]>row[29]):
             homeVSawayGames_awayWin.append(row)
         else:
             homeVSawayGames_homeWin.append(row)
@@ -168,11 +168,11 @@ for i in range(0,len(tekme)):
     homeTeamNumberOfGamesLost=len(homeTeamGamesLost)                #number of games lost by home team
     awayTeamNumberOfGamesWon=len(awayTeamGamesWon)                  #number of games won by away team
     awayTeamNumberOfGamesLost=len(awayTeamGamesLost)                #number of games lost by away team
-    homeTeamWin=(True if tekme[i][29]>tekme[i][28] else False)      #true if home team achieved more points than away team during this game
-    finalPointsScoreDifferential=abs(tekme[i][29]-tekme[i][28])     #difference between home and away team scores after this match
+    homeTeamWin=(True if tekme[i][30]>tekme[i][29] else False)      #true if home team achieved more points than away team during this game
+    finalPointsScoreDifferential= tekme[i][30]-tekme[i][29]     #difference between home and away team scores after this match
     homeVSaway_winRatio=(len(homeVSawayGames_homeWin)-len(homeVSawayGames_awayWin))/(len(homeVSawayGames_homeWin)+len(homeVSawayGames_awayWin)) if len(homeVSawayGames_homeWin)+len(homeVSawayGames_awayWin)>0 else 0 #difference between past home team wins over away team; normaliset to [-1,1] interval 
-    homeTeam_homeTurfAdvantage=(len(homeTeamAsHome_Win)-len(homeTeamAsHome_Losts))/len(homeTeamAsHome) if len(homeTeamAsHome)>0 else 0 #value aproaches +1 as team was more successful playing as home team and approaches -1 if it was actually playing worse
-    awayTeam_homeTurfAdvantage=(len(awayTeamAsHome_Win)-len(awayTeamAsHome_Losts))/len(awayTeamAsHome) if len(awayTeamAsHome)>0 else 0#value aproaches +1 as team was more successful playing as home team and approaches -1 if it was actually playing worse
+    homeTeam_homeTurfAdvantage=round((len(homeTeamAsHome_Win)-len(homeTeamAsHome_Losts))/len(homeTeamAsHome), 4) if len(homeTeamAsHome)>0 else 0 #value aproaches +1 as team was more successful playing as home team and approaches -1 if it was actually playing worse
+    awayTeam_homeTurfAdvantage=round((len(awayTeamAsHome_Win)-len(awayTeamAsHome_Losts))/len(awayTeamAsHome), 4) if len(awayTeamAsHome)>0 else 0#value aproaches +1 as team was more successful playing as home team and approaches -1 if it was actually playing worse
     '''#####append new statistical data for throws TO INPUT TABLE'''
     # 2 points throws
     away2pointAttempt = tekme[i][3]
@@ -205,6 +205,18 @@ for i in range(0,len(tekme)):
     homeFtpercent = round(homeFtMade / homeFtAttempts, 2)
     homeAllpercent = round((home2pointMade + home3pointMade) / (home2pointAttempt + home3pointAttempt), 2)
 
+    #score difference
+    #positive score -> home team winning
+    #negative score -> home team loosing
+    q1_diff = tekme[i][22] - tekme[i][21]
+    q2_diff = tekme[i][24] - tekme[i][23]
+    q3_diff = tekme[i][26] - tekme[i][25]
+    q4_diff = tekme[i][28] - tekme[i][27]
+
+    #team fouls
+    homeTeamFouls = floor(awayFtAttempts / 2);
+    awayTeamFouls = floor(homeFtAttempts / 2);
+
     #append throw statistics
     tekme[i].append(away2percent)
     tekme[i].append(away3percent)
@@ -228,13 +240,31 @@ for i in range(0,len(tekme)):
     gamesRow.append(homeTeamLosingStreakLength)
     gamesRow.append(awayTeam_homeTurfAdvantage)
     gamesRow.append(homeTeam_homeTurfAdvantage)
-    gamesRow.append(finalPointsScoreDifferential) #TARGET VARIABLE FOR REGRESSION
     gamesRow.append(awayNonconsecutiveWins)
     gamesRow.append(awayNonconsecutiveLosts)
     gamesRow.append(homeNonconsecutiveWins)
     gamesRow.append(homeNonconsecutiveLosts)
+
+    gamesRow.append(away2percent)
+    gamesRow.append(away3percent)
+    gamesRow.append(awayFtpercent)
+    gamesRow.append(awayAllpercent)
+    gamesRow.append(home2percent)
+    gamesRow.append(home3percent)
+    gamesRow.append(homeFtpercent)
+    gamesRow.append(homeAllpercent)
+
+    gamesRow.append(q1_diff)
+    gamesRow.append(q2_diff)
+    gamesRow.append(q3_diff)
+    gamesRow.append(q4_diff)
+
+    gamesRow.append(awayTeamFouls)
+    gamesRow.append(homeTeamFouls)
+
+    gamesRow.append(finalPointsScoreDifferential)  # TARGET VARIABLE FOR REGRESSION
     gamesRow.append(homeTeamWin) #TARGET VARIABLE FOR CLASSIFICATION
-    
+
     ##### apend new row to game table
     games.append(gamesRow)
 
@@ -261,15 +291,33 @@ headerGames.append('AWAY_longestWinStreak')
 headerGames.append('AWAY_longestLoseStreak')
 headerGames.append('HOME_longestWinStreak')
 headerGames.append('HOME_longestLoseStreak')
-headerGames.append('HOME_homeTurfAdvantage')
 headerGames.append('AWAY_homeTurfAdvantage')
+headerGames.append('HOME_homeTurfAdvantage')
 headerGames.append('AWAY_nonconsecutiveWins')
 headerGames.append('AWAY_nonconsecutiveLosts')
 headerGames.append('HOME_nonconsecutiveWins')
 headerGames.append('HOME_nonconsecutiveLosts')
+
+headerGames.append('AWAY TEAM 2P %')
+headerGames.append('AWAY TEAM 3P %')
+headerGames.append('AWAY TEAM FT %')
+headerGames.append('AWAY TEAM ALL throws %')
+headerGames.append('HOME TEAM 2P %')
+headerGames.append('HOME TEAM 3P %')
+headerGames.append('HOME TEAM FT %')
+headerGames.append('HOME TEAM ALL throws %')
+
+headerGames.append('Q1 lead HOME vs AWAY')
+headerGames.append('Q2 lead HOME vs AWAY')
+headerGames.append('Q3 lead HOME vs AWAY')
+headerGames.append('Q4 lead HOME vs AWAY')
+
+headerGames.append('AWAY TEAM FOULS')
+headerGames.append('HOME TEAM FOULS')
+
 headerGames.append('finalScoreDifferential') #TARGET VARIABLE FOR REGRESSION
 headerGames.append('HOME_win') #TARGET VARIABLE FOR CLASSIFICATION
-
+#target variables
 
 #test print table
 print(headerGames)
