@@ -1,8 +1,8 @@
 ###### uvoz knjiznic ######
 #C:\Users\Robert\Documents\GitHub\NBApredictions
 
-source("/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/myfunctions.R") #funkcije za ocenjevanje natancnosti modela
-#source("C:/Users/Robert/Documents/GitHub/NBApredictions/myfunctions.R") #funkcije za ocenjevanje natancnosti modela
+#source("/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/myfunctions.R") #funkcije za ocenjevanje natancnosti modela
+source("C:/Users/Robert/Documents/GitHub/NBApredictions/myfunctions.R") #funkcije za ocenjevanje natancnosti modela
 install.packages(c("kknn","pROC","ipred", "prodlim", "CORElearn", "e1071", "randomForest", "kernlab", "nnet"))
 
 library(rpart)
@@ -15,8 +15,8 @@ library(kknn)
 
 
 ###### uvoz podatkov ######
-vseIgre <- read.table("/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/games.csv", header=T, sep=",")
-#vseIgre <- read.table("C:/Users/Robert/Documents/GitHub/NBApredictions/games.csv", header=T, sep=",")
+#vseIgre <- read.table("/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/games.csv", header=T, sep=",")
+vseIgre <- read.table("C:/Users/Robert/Documents/GitHub/NBApredictions/games.csv", header=T, sep=",")
 #odstrani atribut diffPTS_Q2
 vseIgre$diffPTS_Q2 <- NULL
 
@@ -247,9 +247,9 @@ lm.model <- lm(finalScoreDifferential ~ ., data = ucnaMnozicaRegresija)
 observed <- testnaMnozicaRegresija$finalScoreDifferential
 predicted <- predict(lm.model, testnaMnozicaRegresija)
 #povprecna absolutna napaka (RME)
-sprintf("MAE za linearno regresijo: %f",mae(observed, predicted)
+sprintf("MAE za linearno regresijo: %f",mae(observed, predicted))
 #relativna povprecna absolutna napaka (RMAE)
-sprintf("RMAE za linearno regresijo: %f",rmae(observed, predicted, mean(ucnaMnozicaRegresija$finalScoreDifferential))
+sprintf("RMAE za linearno regresijo: %f",rmae(observed, predicted, mean(ucnaMnozicaRegresija$finalScoreDifferential)))
 #srednja kvadrirana napaka
 sprintf("MSE za linearno regresijo: %f",mse(observed, predicted))
 #relativna srednja kvadrirana napaka
@@ -270,9 +270,9 @@ plot(rt.model2)
 observed <- testnaMnozicaRegresija$finalScoreDifferential
 predicted <- predict(rt.model2, testnaMnozicaRegresija)
 #povprecna absolutna napaka (RME)
-sprintf("MAE za regresijsko drevo: %f",mae(observed, predicted)
+sprintf("MAE za regresijsko drevo: %f",mae(observed, predicted))
 #relativna povprecna absolutna napaka (RMAE)
-sprintf("RMAE za regresijsko drevo: %f",rmae(observed, predicted, mean(ucnaMnozicaRegresija$finalScoreDifferential))
+sprintf("RMAE za regresijsko drevo: %f",rmae(observed, predicted, mean(ucnaMnozicaRegresija$finalScoreDifferential)))
 #srednja kvadrirana napaka
 sprintf("MSE za regresijsko drevo: %f",mse(observed, predicted))
 #relativna srednja kvadrirana napaka
@@ -284,9 +284,9 @@ rf.model <- randomForest(finalScoreDifferential ~ ., ucnaMnozicaRegresija)
 observed <- testnaMnozicaRegresija$finalScoreDifferential
 predicted <- predict(rf.model, testnaMnozicaRegresija)
 #povprecna absolutna napaka (RME)
-sprintf("MAE za SVM: %f",mae(observed, predicted)
+sprintf("MAE za SVM: %f",mae(observed, predicted))
 #relativna povprecna absolutna napaka (RMAE)
-sprintf("RMAE za nakljucne gozdove: %f",rmae(observed, predicted, mean(ucnaMnozicaRegresija$finalScoreDifferential))
+sprintf("RMAE za nakljucne gozdove: %f",rmae(observed, predicted, mean(ucnaMnozicaRegresija$finalScoreDifferential)))
 #srednja kvadrirana napaka
 sprintf("MSE za nakljucne gozdove: %f",mse(observed, predicted))
 #relativna srednja kvadrirana napaka
@@ -298,9 +298,9 @@ svm.model <- svm(finalScoreDifferential ~ ., ucnaMnozicaRegresija)
 observed <- testnaMnozicaRegresija$finalScoreDifferential
 predicted <- predict(svm.model, testnaMnozicaRegresija)
 #povprecna absolutna napaka (RME)
-sprintf("MAE za SVM: %f",mae(observed, predicted)
+sprintf("MAE za SVM: %f",mae(observed, predicted))
 #relativna povprecna absolutna napaka (RMAE)
-sprintf("RMAE za SVM: %f",rmae(observed, predicted, mean(ucnaMnozicaRegresija$finalScoreDifferential))
+sprintf("RMAE za SVM: %f",rmae(observed, predicted, mean(ucnaMnozicaRegresija$finalScoreDifferential)))
 #srednja kvadrirana napaka
 sprintf("MSE za SVM: %f",mse(observed, predicted))
 #relativna srednja kvadrirana napaka
@@ -323,9 +323,9 @@ nn.model <- nnet(finalScoreDifferential ~ ., ucnaMnozicaRegresija, size = 10, de
 observed <- testnaMnozicaRegresija$finalScoreDifferential
 predicted <- predict(nn.model, testnaMnozicaRegresija)
 #povprecna absolutna napaka (RME)
-sprintf("MAE za nevronsko mrezo: %f",mae(observed, predicted)
+sprintf("MAE za nevronsko mrezo: %f",mae(observed, predicted))
 #relativna povprecna absolutna napaka (RMAE)
-sprintf("RMAE za nevronsko mrezo: %f",rmae(observed, predicted, mean(ucnaMnozicaRegresija$finalScoreDifferential))
+sprintf("RMAE za nevronsko mrezo: %f",rmae(observed, predicted, mean(ucnaMnozicaRegresija$finalScoreDifferential)))
 #srednja kvadrirana napaka
 sprintf("MSE za nevronsko mrezo: %f",mse(observed, predicted))
 #relativna srednja kvadrirana napaka

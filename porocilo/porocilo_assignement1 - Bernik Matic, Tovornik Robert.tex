@@ -130,7 +130,7 @@ pa sva ocenila po pričakovani vrednosti.
 
 \section{Metode}
 
-\subsection{Tesiranje}
+\subsection{Testiranje}
 
 Da lahko ugotovimo natančnost in uspešnost naših atributov oziroma 
 napovedni modelov, je potrebno testiranje. Osnovna metoda testiranja 
@@ -147,6 +147,23 @@ po razmerju 70 - 30 procentov, kjer so vsi primeri najprej primerno razvrščeni
 vseh primerov in 30 procentov zadnjih 30 procentov vseh primerov. Prav tako 
 ni bil izveden običajen korak premešanja podatkov, prav z razlogom ohranitve 
 časovnega zaporedja.
+
+Da bi zagotovila primernost delitve, sva jo tudi testirala z uporabo večinskega 
+klasifikatorja nad učno ter nad testno množico. Rezultati so bili zadovoljivo blizu.
+
+\begin{table}[H]
+\caption{Primerjava večinskega klasifikatorja nad splošno, učno ter testno množico.}
+\label{tab1}
+\begin{center}
+\begin{tabular}{llp{3cm}}
+\hline
+Splošen klasifikator & Test nad učno množico & Test nad testno množico \\
+\hline
+0.601302 & 0.610691 & 0.579946 \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
 
 \subsection{Klasifikacija}
 
@@ -170,7 +187,7 @@ obcutljivost, specificnost, ter izrisala ROC krivujlo.
 \hline
 Metoda & Natančnost & Brier score & Sensitivity & Specificity & Ploščina pod krivuljo ROC\\
 \hline
-Majority & 0.60132 & - & - & - & - \\
+Majority & 0.601302 & - & - & - & - \\
 \hline
 DecTree & 0.615176 & 0.524994 & 0.710280 & 0.483871 & 0.6121 \\
 kNN & 0.649051 & 0.447209 & 0.803738 & 0.435484 & 0.6753 \\
@@ -178,6 +195,22 @@ rPart & 0.650407 & 0.456028 & 0.747664 & 0.516129 & 0.6685 \\
 RandForest & 0.653117 & 0.443033 & 0.880841 & 0.338710 & 0.6728 \\
 SVM & 0.658537 & - & 0.871495 & 0.364516 & 0.6728 \\
 NaiveBayes & 0.665312 & 0.540539 & 0.775701 & 0.512903 & 0.7065 \\
+\hline
+Q2	-  spremembe \\
+\hline
+DecTree & 0.612466 & 0.551575 & 0.764019 & 0.403226 & 0.6226 \\
+RandForest & 0.639566 & 0.446379 & 0.873832 & 0.316129 & 0.6655 \\
+kNN & 0.644986 & 0.445738 & 0.801402 & 0.429032 & 0.6671 \\
+SVM & 0.651762 & - & 0.866822 & 0.354839 & - \\
+NaiveBayes & 0.658537 & 0.540635 & 0.768692 & 0.506452 & 0.7059 \\
+\hline
+Q3	-  spremembe \\
+\hline
+DecTree & 0.631821 & 0.525576 & 0.696262 & 0.500000 & 0.6026 \\
+RandForest & 0.638211 & 0.443600 & 0.862150 & 0.329032 & 0.6703 \\
+kNN & 0.650407 & 0.445488 & 0.813084 & 0.425806 & 0.6781 \\
+SVM & 0.651762 & - & 0.864486 & 0.358065 & - \\
+NaiveBayes & 0.663957 & 0.540805 & 0.773364 & 0.512903 & 0.7057 \\
 \hline
 \end{tabular}
 \end{center}
@@ -208,7 +241,7 @@ MAE, RMAE, MSE ter RMSE, kot je razvidno iz sledeče tabele
 
 
 \begin{table}[H]
-\caption{Metode klasifikacije ter pripadajoča uspešnost.}
+\caption{Metode regresije ter pripadajoča uspešnost.}
 \label{tab1}
 \begin{center}
 \begin{tabular}{llllp{3cm}}
@@ -220,6 +253,20 @@ LinReg & 10.372827 & 0.968670 & 167.086603 & 0.939216 \\
 NeuralNet & 10.168043 & 0.949546 & 166.457396 & 0.935679 \\
 SVM & 10.003695 & 0.934198 & 156.683559 & 0.880739 \\
 RandForests & 9.905421 & 0.925021 & 155.271914 & 0.872804 \\
+\hline
+Q2	- sprememba \\
+\hline
+NeuralNet & 10.310324 & 0.962833 & 168.892140 & 0.949365 \\
+LinReg & 10.372770 & 0.968664 & 167.104486 & 0.939316 \\
+SVM & 10.041344 & 0.937714 & 158.245159 & 0.889517 \\
+RandForests & 9.802771 & 0.915435 & 153.416885 & 0.862377 \\
+\hline
+Q3	- sprememba \\
+\hline
+LinReg & 10.398817 & 0.971097 & 167.889116 & 0.943727 \\
+NeuralNet & 10.070732 & 0.940458 & 160.490729 & 0.902140 \\
+SVM & 10.038235 & 0.937424 & 158.002436 & 0.888153 \\
+RandForests & 9.953541 & 0.929515 & 157.265529 & 0.884010 \\
 \hline
 \end{tabular}
 \end{center}
