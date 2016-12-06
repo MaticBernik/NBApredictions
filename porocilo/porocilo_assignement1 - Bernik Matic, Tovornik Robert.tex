@@ -162,7 +162,7 @@ Sledila je klasifikacija po sledečih metodah, z doseženimi pripadajočimi
 rezultati. Ocenjevala sva natančnost klasfikacije, pripadajočo oceno Brier, 
 obcutljivost, specificnost, ter izrisala ROC krivujlo.
 
-\begin{table}[htbp]
+\begin{table}[H]
 \caption{Metode klasifikacije ter pripadajoča uspešnost.}
 \label{tab1}
 \begin{center}
@@ -200,6 +200,33 @@ Zato sva izbrala kot najboljšo klasifikacijsko metodo kar SVM.
 
 \subsection{Regresija}
 
+Pri regresiji pa je bil prvi korak ravno obraten kot pri klasifikaciji, najprej
+sva odstranila atribut "Home win", saj je napovedni objekt klasifikacije.
+
+Pri ocenjevanju regresije, sva uporabila vrsto ocen, na različnih modelih: 
+MAE, RMAE, MSE ter RMSE, kot je razvidno iz sledeče tabele
+
+
+\begin{table}[H]
+\caption{Metode klasifikacije ter pripadajoča uspešnost.}
+\label{tab1}
+\begin{center}
+\begin{tabular}{llllp{3cm}}
+\hline
+Metoda & MAE & RMAE & MSE & RMSE\\
+\hline
+RegTree & 10.325824 & 0.964280 & 167.115254 & 0.939377 \\
+LinReg & 10.372827 & 0.968670 & 167.086603 & 0.939216 \\
+NeuralNet & 10.168043 & 0.949546 & 166.457396 & 0.935679 \\
+SVM & 10.003695 & 0.934198 & 156.683559 & 0.880739 \\
+RandForests & 9.905421 & 0.925021 & 155.271914 & 0.872804 \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+Kot se izkaže, najbolje nad podanimi podatki deluje model "Random 
+Forests". 
 
 
 \section{Rezultati}
