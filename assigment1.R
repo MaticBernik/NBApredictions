@@ -322,7 +322,7 @@ set.seed(6789)
 nn.model <- nnet(finalScoreDifferential ~ ., ucnaMnozicaRegresija, size = 10, decay = 1e-4, maxit = 10000, linout = T)
 #ocena natancnosti modela
 observed <- testnaMnozicaRegresija$finalScoreDifferential
-predicted <- predict(svm.model, testnaMnozicaRegresija)
+predicted <- predict(nn.model, testnaMnozicaRegresija)
 #povprecna absolutna napaka (RME)
 sprintf("MAE za nevronsko mrezo: %f",mae(observed, predicted)
 #relativna povprecna absolutna napaka (RMAE)
