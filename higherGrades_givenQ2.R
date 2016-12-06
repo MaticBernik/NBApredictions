@@ -17,8 +17,7 @@ library(kknn)
 ###### uvoz podatkov ######
 vseIgre <- read.table("/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/games.csv", header=T, sep=",")
 #vseIgre <- read.table("C:/Users/Robert/Documents/GitHub/NBApredictions/games.csv", header=T, sep=",")
-#odstrani atributa diffPTS_Q2 in diffPTS_Q3, ki smeta biti uporabljena zgolj znotraj 'higher grades' dela naloge
-vseIgre$diffPTS_Q2 <- NULL
+#odstrani atribut diffPTS_Q3
 vseIgre$diffPTS_Q3 <- NULL
 
 ###### pregled podatkov ######

@@ -4,16 +4,16 @@ from datetime import date, datetime, timedelta
 from math import floor
 """""""""""""""""""""""""""""""""    PATH VARIABLES     """""""""""""""""""""""""""""""""""""""
 #matic
-# file0809 = '/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/nba0809.txt'
-# file0910 = '/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/nba0910.txt'
-# output_file = '/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/games.csv'
-# merged_file = '/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/nbaMerge.csv'
+file0809 = '/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/nba0809.txt'
+file0910 = '/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/nba0910.txt'
+output_file = '/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/games.csv'
+merged_file = '/home/matic/Dropbox/Inteligentni Sistemi/Assigment1/nbaMerge.csv'
 
 #robert
-file0809 = 'C:/Users/Robert/Documents/GitHub/NBApredictions/nba0809.txt'
-file0910 = 'C:/Users/Robert/Documents/GitHub/NBApredictions/nba0910.txt'
-output_file = 'C:/Users/Robert/Documents/GitHub/NBApredictions/games.csv'
-merged_file = 'C:/Users/Robert/Documents/GitHub/NBApredictions/nbaMerge.csv'
+#file0809 = 'C:/Users/Robert/Documents/GitHub/NBApredictions/nba0809.txt'
+#file0910 = 'C:/Users/Robert/Documents/GitHub/NBApredictions/nba0910.txt'
+#output_file = 'C:/Users/Robert/Documents/GitHub/NBApredictions/games.csv'
+#merged_file = 'C:/Users/Robert/Documents/GitHub/NBApredictions/nbaMerge.csv'
 
 """""""""""""""""""""""""""""""""     read file    """""""""""""""""""""""""""""""""""""""
 #####preberemo datoteki v tabeli
@@ -335,6 +335,9 @@ for i in range(0,len(tekme)):
     gamesRow.append(floor(q3_diff))
     gamesRow.append(floor(q4_diff))
 
+    gamesRow.append(row[24]-row[23]) #difference in points scoret up to the end of the 2nd quarter
+    gamesRow.append(row[26]-row[25]) #difference in points scoret up to the end of the 3rd quarter
+
     gamesRow.append(floor(finalPointsScoreDifferential)) # TARGET VARIABLE FOR REGRESSION
     gamesRow.append(homeTeamWin) #TARGET VARIABLE FOR CLASSIFICATION
 
@@ -383,6 +386,8 @@ headerGames.append('Q2 lead HOME vs AWAY')
 headerGames.append('Q3 lead HOME vs AWAY')
 headerGames.append('Q4 lead HOME vs AWAY')
 
+headerGames.append("diffPTS_Q2") # attribute shuld be only used in 'higher grades' part of task 
+headerGames.append("diffPTS_Q3") # attribute shuld be only used in 'higher grades' part of task 
 headerGames.append('finalScoreDifferential') #TARGET VARIABLE FOR REGRESSION
 headerGames.append('HOME_win') #TARGET VARIABLE FOR CLASSIFICATION
 #target variables
